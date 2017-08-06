@@ -1,18 +1,19 @@
 package com.example.denni.p2000reader;
 
-import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main);
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             addRssFragment();
         }
     }
@@ -23,11 +24,5 @@ public class MainActivity extends FragmentActivity {
         RssFragment fragment = new RssFragment();
         transaction.add(R.id.fragment_container, fragment);
         transaction.commit();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("fragment_added", true);
     }
 }
