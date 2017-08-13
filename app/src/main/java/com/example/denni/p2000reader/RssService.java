@@ -20,7 +20,7 @@ import java.util.List;
 public class RssService extends IntentService {
     public static final String ITEMS = "items";
     public static final String ACTION_RSS_PARSED = "com.p2000reader.ACTION_RSS_PARSED";
-    private static final String RSS_LINK = "http://www.pcworld.com/index.rss";
+    private static final String RSS_LINK = "http://feeds.livep2000.nl/";
 
 
     public RssService() { super("RssService"); }

@@ -7,7 +7,11 @@ package com.example.denni.p2000reader;
         import android.content.IntentFilter;
         import android.net.Uri;
         import android.os.Bundle;
+        import android.support.v4.app.FragmentManager;
+        import android.support.v4.app.FragmentTransaction;
         import android.support.v4.content.LocalBroadcastManager;
+        import android.support.v4.widget.SwipeRefreshLayout;
+        import android.util.Log;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
@@ -21,16 +25,19 @@ package com.example.denni.p2000reader;
  * Created by denni on 6-8-2017.
  */
 
-public class RssFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class RssFragment extends Fragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private ProgressBar progressBar;
     private ListView listView;
-
+    private SwipeRefreshLayout swipeContainer;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_layout, container, false);
+        swipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.swipeContainer);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         listView = (ListView) view.findViewById(R.id.listView);
+        swipeContainer.setColorSchemeResources(R.color.refresh, R.color.refresh1, R.color.refresh2);
+        swipeContainer.setOnRefreshListener(this);
         listView.setOnItemClickListener(this);
         return view;
     }
@@ -60,6 +67,12 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
         }
     };
 
+    @Override
+    public void onRefresh() {
+        swipeContainer.setRefreshing(false);
+        Log.d("Test", "Received");
+    }
+
 
 
     @Override
@@ -70,6 +83,8 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
+
+
 
     @Override
     public void onStart() {
@@ -83,7 +98,5 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
         super.onStop();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(resultReceiver);
     }
-
-
 
 }
