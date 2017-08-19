@@ -57,7 +57,7 @@ public class P2000RssParser {
             } else if (name.equals(TAG_GEOLONG)) {
                 geoLong = readGeoLong(parser);
             }
-            if (title != null && link != null) {
+            if (title != null && link != null & geoLat != 0 & geoLong != 0) {
                 RssItem item = new RssItem(title, link, geoLat, geoLong);
                 items.add(item);
                 title = null;
