@@ -68,17 +68,18 @@ public class P2000RssParser {
         }
         return items;
     }
+
     private String readLink(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, TAG_LINK);
         String link = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns ,TAG_LINK);
+        parser.require(XmlPullParser.END_TAG, ns, TAG_LINK);
         return link;
     }
 
     private String readTitle(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, TAG_TITLE);
         String title = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns , TAG_TITLE);
+        parser.require(XmlPullParser.END_TAG, ns, TAG_TITLE);
         return title;
     }
 
@@ -98,7 +99,7 @@ public class P2000RssParser {
 
     private String readText(XmlPullParser parser) throws XmlPullParserException, IOException {
         String result = "";
-        if(parser.next() == XmlPullParser.TEXT) {
+        if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
             parser.nextTag();
         }
@@ -107,7 +108,7 @@ public class P2000RssParser {
 
     private double readNumber(XmlPullParser parser) throws XmlPullParserException, IOException {
         String result = "";
-        if(parser.next() == XmlPullParser.TEXT) {
+        if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
             parser.nextTag();
         }

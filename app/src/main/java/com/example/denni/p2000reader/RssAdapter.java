@@ -16,30 +16,36 @@ public class RssAdapter extends BaseAdapter {
     private final List<RssItem> items;
     private final Context context;
 
-    public RssAdapter(Context context, List<RssItem> items){
+    public RssAdapter(Context context, List<RssItem> items) {
         this.items = items;
         this.context = context;
     }
 
     @Override
-    public int getCount() {return items.size();}
+    public int getCount() {
+        return items.size();
+    }
 
     @Override
-    public Object getItem(int position) {return items.get(position);}
+    public Object getItem(int position) {
+        return items.get(position);
+    }
 
     @Override
-    public long getItemId(int id) {return id;}
+    public long getItemId(int id) {
+        return id;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        if(convertView == null) {
+        if (convertView == null) {
             convertView = View.inflate(context, R.layout.rss_item, null);
             holder = new ViewHolder();
             holder.itemTitle = (TextView) convertView.findViewById(R.id.itemTitle);
             convertView.setTag(holder);
         } else {
-            holder = (ViewHolder)convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
         holder.itemTitle.setText(items.get(position).getTitle());
         return convertView;

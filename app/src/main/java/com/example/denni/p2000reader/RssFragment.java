@@ -1,24 +1,25 @@
 package com.example.denni.p2000reader;
 
-        import android.support.v4.app.Fragment;
-        import android.content.BroadcastReceiver;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.IntentFilter;
-        import android.net.Uri;
-        import android.os.Bundle;
-        import android.support.v4.content.LocalBroadcastManager;
-        import android.support.v4.widget.SwipeRefreshLayout;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.AdapterView;
-        import android.widget.ListView;
-        import android.widget.ProgressBar;
-        import android.widget.Toast;
+import android.support.v4.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
-        import java.util.List;
+import java.util.List;
+
 /**
  * Created by denni on 6-8-2017.
  */
@@ -28,10 +29,11 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
     private ProgressBar progressBar;
     private ListView listView;
     private SwipeRefreshLayout swipeContainer;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_layout, container, false);
-        swipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.swipeContainer);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         listView = (ListView) view.findViewById(R.id.listView);
         swipeContainer.setColorSchemeResources(R.color.refresh, R.color.refresh1, R.color.refresh2);
@@ -57,12 +59,12 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
             onRefresh();
             progressBar.setVisibility(View.GONE);
             List<RssItem> items = (List<RssItem>) intent.getSerializableExtra(RssService.ITEMS);
-            if(items != null) {
+            if (items != null) {
                 RssAdapter adapter = new RssAdapter(getActivity(), items);
                 listView.setAdapter(adapter);
                 Log.d("List", items.toString());
             } else {
-                Toast.makeText(getActivity(), "An error occured while downloading the rss feed." , Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "An error occured while downloading the rss feed.", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -74,15 +76,13 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
         RssAdapter adapter = (RssAdapter) parent.getAdapter();
         RssItem item = (RssItem) adapter.getItem(position);
 
         double Lat = item.getGeoLat();
         double Long = item.getGeoLong();
 
-        Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Lat +","+Long);
-        Log.d("Location", uri.toString());
+        Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Lat + "," + Long);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }

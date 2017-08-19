@@ -23,7 +23,9 @@ public class RssService extends IntentService {
     private static final String RSS_LINK = "http://feeds.livep2000.nl/";
 
 
-    public RssService() { super("RssService"); }
+    public RssService() {
+        super("RssService");
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -45,7 +47,7 @@ public class RssService extends IntentService {
         try {
             URL url = new URL(link);
             return url.openConnection().getInputStream();
-        } catch(IOException e) {
+        } catch (IOException e) {
             Log.w(Constants.TAG, "Exception while receiving the input stream", e);
             return null;
         }
