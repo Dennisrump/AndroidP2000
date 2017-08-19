@@ -27,20 +27,20 @@ import java.util.List;
 
 public class RssFragment extends Fragment implements AdapterView.OnItemClickListener {
     private ListView listView;
-    private SwipeRefreshLayout mswipeRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_layout, container, false);
-        mswipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        mswipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         listView = (ListView) view.findViewById(R.id.listView);
         listView.setOnItemClickListener(this);
 
-        mswipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 FetchNewItems();
-                mswipeRefreshLayout.setRefreshing(false);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
         return view;
@@ -93,7 +93,12 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(resultReceiver);
     }
 
+    // Moet nog verbeterd worden -> nu wordt de hele fragment opnieuw opgebouwd en bewaard in de achtergrond
     public void FetchNewItems() {
-        Log.w("Test", "Voor refresh");
+        listView.setAdapter(null);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.detach(this);
+        fragmentTransaction.attach(this);
+        fragmentTransaction.commit();
     }
 }
