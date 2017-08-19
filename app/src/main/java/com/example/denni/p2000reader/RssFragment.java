@@ -74,9 +74,15 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
         RssAdapter adapter = (RssAdapter) parent.getAdapter();
         RssItem item = (RssItem) adapter.getItem(position);
-        Uri uri = Uri.parse(item.getLink());
+
+        double Lat = item.getGeoLat();
+        double Long = item.getGeoLong();
+
+        Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Lat +","+Long);
+        Log.d("Location", uri.toString());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
