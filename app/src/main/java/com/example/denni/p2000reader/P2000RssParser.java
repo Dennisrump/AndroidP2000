@@ -18,6 +18,8 @@ public class P2000RssParser {
 
     private static final String TAG_TITLE = "title";
     private static final String TAG_LINK = "link";
+    private static final String TAG_GEOLAT = "geo:lat";
+    private static final String TAG_GEOLONG = "geo:long";
     private static final String TAG_RSS = "rss";
 
     private final String ns = null;
@@ -38,24 +40,30 @@ public class P2000RssParser {
         parser.require(XmlPullParser.START_TAG, null, TAG_RSS);
         String title = null;
         String link = null;
-
+        double geoLat = 0;
+        double geoLong = 0;
         List<RssItem> items = new ArrayList<RssItem>();
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-
             String name = parser.getName();
             if (name.equals(TAG_TITLE)) {
                 title = readTitle(parser);
             } else if (name.equals(TAG_LINK)) {
                 link = readLink(parser);
+            } else if (name.equals(TAG_GEOLAT)) {
+                geoLat = readGeoLat(parser);
+            } else if (name.equals(TAG_GEOLONG)) {
+                geoLong = readGeoLong(parser);
             }
             if (title != null && link != null) {
-                RssItem item = new RssItem(title, link);
+                RssItem item = new RssItem(title, link, geoLat, geoLong);
                 items.add(item);
                 title = null;
                 link = null;
+                geoLat = 0;
+                geoLong = 0;
             }
         }
         return items;
@@ -74,6 +82,20 @@ public class P2000RssParser {
         return title;
     }
 
+    private double readGeoLat(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, TAG_GEOLAT);
+        double geoLat = readNumber(parser);
+        parser.require(XmlPullParser.END_TAG, ns, TAG_GEOLAT);
+        return geoLat;
+    }
+
+    private double readGeoLong(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, TAG_GEOLONG);
+        double geoLong = readNumber(parser);
+        parser.require(XmlPullParser.END_TAG, ns, TAG_GEOLONG);
+        return geoLong;
+    }
+
     private String readText(XmlPullParser parser) throws XmlPullParserException, IOException {
         String result = "";
         if(parser.next() == XmlPullParser.TEXT) {
@@ -81,5 +103,14 @@ public class P2000RssParser {
             parser.nextTag();
         }
         return result;
+    }
+
+    private double readNumber(XmlPullParser parser) throws XmlPullParserException, IOException {
+        String result = "";
+        if(parser.next() == XmlPullParser.TEXT) {
+            result = parser.getText();
+            parser.nextTag();
+        }
+        return Double.parseDouble(result);
     }
 }

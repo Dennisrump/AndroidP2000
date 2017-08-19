@@ -7,8 +7,6 @@ package com.example.denni.p2000reader;
         import android.content.IntentFilter;
         import android.net.Uri;
         import android.os.Bundle;
-        import android.support.v4.app.FragmentManager;
-        import android.support.v4.app.FragmentTransaction;
         import android.support.v4.content.LocalBroadcastManager;
         import android.support.v4.widget.SwipeRefreshLayout;
         import android.util.Log;
@@ -56,11 +54,13 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
     private BroadcastReceiver resultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            onRefresh();
             progressBar.setVisibility(View.GONE);
             List<RssItem> items = (List<RssItem>) intent.getSerializableExtra(RssService.ITEMS);
             if(items != null) {
                 RssAdapter adapter = new RssAdapter(getActivity(), items);
                 listView.setAdapter(adapter);
+                Log.d("List", items.toString());
             } else {
                 Toast.makeText(getActivity(), "An error occured while downloading the rss feed." , Toast.LENGTH_LONG).show();
             }
@@ -70,10 +70,7 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public void onRefresh() {
         swipeContainer.setRefreshing(false);
-        Log.d("Test", "Received");
     }
-
-
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -83,8 +80,6 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
-
-
 
     @Override
     public void onStart() {
