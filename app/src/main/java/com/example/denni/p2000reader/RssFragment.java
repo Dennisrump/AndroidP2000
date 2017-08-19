@@ -1,6 +1,9 @@
 package com.example.denni.p2000reader;
 
-import android.support.v4.app.Fragment;
+
+
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,40 +11,40 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
+import android.support.v4.widget.SwipeRefreshLayout;
 import java.util.List;
 
 /**
  * Created by denni on 6-8-2017.
  */
 
-public class RssFragment extends Fragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
-
-    private ProgressBar progressBar;
+public class RssFragment extends Fragment implements AdapterView.OnItemClickListener {
     private ListView listView;
-    private SwipeRefreshLayout swipeContainer;
-
+    private SwipeRefreshLayout mswipeRefreshLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_layout, container, false);
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        mswipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        mswipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         listView = (ListView) view.findViewById(R.id.listView);
-        swipeContainer.setColorSchemeResources(R.color.refresh, R.color.refresh1, R.color.refresh2);
-        swipeContainer.setOnRefreshListener(this);
         listView.setOnItemClickListener(this);
+
+        mswipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                FetchNewItems();
+                mswipeRefreshLayout.setRefreshing(false);
+            }
+        });
         return view;
     }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -52,12 +55,9 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
         Intent intent = new Intent(getActivity(), RssService.class);
         getActivity().startService(intent);
     }
-
     private BroadcastReceiver resultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            onRefresh();
-            progressBar.setVisibility(View.GONE);
             List<RssItem> items = (List<RssItem>) intent.getSerializableExtra(RssService.ITEMS);
             if (items != null) {
                 RssAdapter adapter = new RssAdapter(getActivity(), items);
@@ -70,18 +70,11 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
     };
 
     @Override
-    public void onRefresh() {
-        swipeContainer.setRefreshing(false);
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         RssAdapter adapter = (RssAdapter) parent.getAdapter();
         RssItem item = (RssItem) adapter.getItem(position);
-
         double Lat = item.getGeoLat();
         double Long = item.getGeoLong();
-
         Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Lat + "," + Long);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
@@ -100,4 +93,7 @@ public class RssFragment extends Fragment implements AdapterView.OnItemClickList
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(resultReceiver);
     }
 
+    public void FetchNewItems() {
+        Log.w("Test", "Voor refresh");
+    }
 }
